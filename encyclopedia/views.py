@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 
 from . import util
@@ -8,3 +9,12 @@ def index(request):
         "entries": util.list_entries()
     })
 
+def entry(request, title):
+    content = util.get_entry(title)
+    if content:
+        return render(request, "encyclopedia/entry.html", {
+            "title": title,
+            "content": content
+        })
+    else: 
+        return HttpResponse("Entry does not exists.")
