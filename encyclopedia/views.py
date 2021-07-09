@@ -17,4 +17,6 @@ def entry(request, title):
             "content": content
         })
     else: 
-        return HttpResponse("Entry does not exists.")
+        return render(request, "encyclopedia/entry_does_not_extist.html", {
+            "title": title
+        })
