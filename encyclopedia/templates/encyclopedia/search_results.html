@@ -1,0 +1,22 @@
+
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Search results for {{ query }}
+{% endblock %}
+
+{% block body %}
+<h1>The entry "{{ query }}" does not exist.</h1>
+{% if suggested_search_results %}
+    <h2>Entries containing "{{ query }}":</h2>
+{% endif %}
+
+<ul>
+    {% for entry in suggested_search_results %}
+        <li><a href="{% url 'entry' title=entry %}">{{ entry }}</a></li>
+    {% empty %}
+    <h2>No similar matches for "{{ query }}" found.</h2>
+    {% endfor %}
+</ul>
+
+{% endblock %}
