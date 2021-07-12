@@ -25,9 +25,9 @@ def index(request):
 def entry(request, title):
     content = util.get_entry(title)
     markdowner = markdown2.Markdown()
-    content = markdowner.convert(content)
 
     if content:
+        content = markdowner.convert(content)
         return render(request, "encyclopedia/entry.html", {
             "title": title,
             "content": content
