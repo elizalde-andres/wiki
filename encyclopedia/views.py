@@ -1,3 +1,4 @@
+import random
 from logging import disable
 from django import forms
 from django.http import HttpResponseRedirect
@@ -111,3 +112,9 @@ def edit_page(request, title):
         })
     
 
+def random_page(request):
+    random_page_title = random.choice(util.list_entries())
+    return HttpResponseRedirect(reverse("entry", args=(random_page_title,)))
+
+
+    
