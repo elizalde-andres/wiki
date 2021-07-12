@@ -1,3 +1,4 @@
+from logging import disable
 from django import forms
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -18,6 +19,7 @@ def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries()
     })
+
 
 def entry(request, title):
     content = util.get_entry(title)
@@ -54,6 +56,7 @@ def search(request):
         "suggested_search_results": suggested_search_results
         })
 
+
 def create_page(request):
     if request.method == "POST":
         form = NewPageForm(request.POST)
@@ -81,3 +84,30 @@ def create_page(request):
             "entry_already_exists": False,
             "form_is_not_valid": False
         })
+
+
+def edit_page(request, title):
+    if request.method == "POST":
+        print(f"REQUEST POSTTTT {request.POST}")
+        print(f"TITLEEEEEEEEE {title}")
+        form = NewPageForm(request.POST)
+        if form.is_valid():
+            entry_title = form.cleaned_data["title"]            
+            page_content = form.cleaned_data["content"]
+            util.save_entry(entry_title, page_content)
+            return HttpResponseRedirect(reverse("entry", args=(entry_title,)))
+        else:
+            return render(request, "encyclopedia/edit_page.html", {
+            "form": NewPageForm(request.POST),
+            "form_is_not_valid": True
+        })
+    form = NewPageForm({
+                        "title": title,
+                        "content": util.get_entry(title)
+                    })
+    form.fields['title'].widget.attrs['readonly'] = True
+    return render(request, "encyclopedia/edit_page.html", {
+            "form": form
+        })
+    
+

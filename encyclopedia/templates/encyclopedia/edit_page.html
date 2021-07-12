@@ -1,0 +1,19 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Edit "{{ form.title.value }}"
+{% endblock %}
+
+{% block body %}
+    {% if form_is_not_valid %}
+        <h3>The text you entered is not valid.</h3>
+        <p>Please edit your entry page and save again.</p>
+    {% endif %}
+    <h1>Editing "{{ form.title.value }}" Page:</h1>
+    <form action="{% url 'edit' title=form.title.value %}" method="POST">
+        {% csrf_token %}
+        {{ form.title.label }}: {{ form.title }}
+        {{ form.content }}
+        <input type="submit" value="Save">
+    </form>
+{% endblock %}
