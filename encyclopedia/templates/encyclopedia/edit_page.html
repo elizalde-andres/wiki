@@ -12,8 +12,8 @@
     <h1>Editing "{{ form.title.value }}" Page:</h1>
     <form action="{% url 'edit' title=form.title.value %}" method="POST">
         {% csrf_token %}
-        {{ form.title.label }}: {{ form.title }}
-        {{ form.content }}
+        <p>{{ form.title.label }}: {{ form.title }}</p>
+        <p>{{ form.content }}</p>
         <input type="submit" value="Save">
     </form>
 {% endblock %}

@@ -51,14 +51,13 @@ def search(request):
                 return HttpResponseRedirect(reverse("entry", args=(entry_title,)))
             elif query.lower() in entry_title.lower():
                 suggested_search_results.append(entry_title)
-                print(suggested_search_results)
         return render(request, "encyclopedia/search_results.html", {
         "query": query,
         "suggested_search_results": suggested_search_results
         })
 
 
-def create_page(request):
+def create_page(request, title=""):
     if request.method == "POST":
         form = NewPageForm(request.POST)
         if form.is_valid():
@@ -89,8 +88,6 @@ def create_page(request):
 
 def edit_page(request, title):
     if request.method == "POST":
-        print(f"REQUEST POSTTTT {request.POST}")
-        print(f"TITLEEEEEEEEE {title}")
         form = NewPageForm(request.POST)
         if form.is_valid():
             entry_title = form.cleaned_data["title"]            

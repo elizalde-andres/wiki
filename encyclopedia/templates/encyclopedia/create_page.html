@@ -14,7 +14,8 @@
     {% endif %}
         <form action="{% url 'create' %}" method="POST">
             {% csrf_token %}
-            {{ form }}
+            {{ form.title.label }}: {{ form.title }}
+            {{ form.content }}
             <input type="submit" value="Save">
         </form>
 {% endblock %}
