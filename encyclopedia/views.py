@@ -9,8 +9,9 @@ from django.shortcuts import render
 from . import util
 import encyclopedia
 
-class NewSearchForm(forms.Form):
-    q = forms.CharField(label="Search Encyclopedia")
+class NewPageForm(forms.Form):
+    title = forms.CharField(label="Entry title")
+    content = forms.CharField(label="", widget=forms.Textarea)
 
 
 def index(request):
@@ -34,7 +35,7 @@ def entry(request, title):
         })
 
 #Searches for title query in list_entries
-#If the query matches one of the items calls entry method that redirects to the correspondant entry
+#If the query matches one of the items redirects to the correspondant entry
 #If the query does not match one of the items returns the query string and a list of entries containing the query search
 def search(request):
     if request.method == "POST":
@@ -46,8 +47,6 @@ def search(request):
             if entry_title.lower() == query.lower():
                 return HttpResponseRedirect(reverse("entry", args=(entry_title,)))
             elif query.lower() in entry_title.lower():
-                print("MATCHHHHHHHHHHHHHHHHHH")
-                print(f"query.lower() {query.lower()} in entry_title.lower() {entry_title.lower()}")
                 suggested_search_results.append(entry_title)
                 print(suggested_search_results)
         return render(request, "encyclopedia/search_results.html", {
@@ -55,32 +54,30 @@ def search(request):
         "suggested_search_results": suggested_search_results
         })
 
-
-# def search(request):
-#     if request.method == "POST":
-#         search = NewSearchForm(request.POST)
-#         if search.is_valid():
-#             query = search.cleaned_data["q"]
-            
-#             entries = util.list_entries()
-#             suggested_search_results = []
-
-#             for entry_title in entries:
-#                 if entry_title.lower == query.lower:
-#                     return HttpResponseRedirect(reverse("encyclopedia:entry_title"))
-#                     # entry(request, entry_title)
-#                 elif entry_title.lower.find(query.lower) >= 0:
-#                     suggested_search_results.append(entry_title)
-#             return render(request, "encyclopedia/search_results.html", {
-#                 "query": query,
-#                 "title": suggested_search_results
-#                 })
-#         else:
-#             #TODO: redirect to an error page
-#             return HttpResponseRedirect(reverse("encyclopedia:index"))
-#     else:
-#         #TODO: I don't know!!!!
-#         return HttpResponseRedirect(reverse("encyclopedia:index"))
-#         # return render(request, "tasks/add.html", {
-#         #     "form": NewTaskForm()
-#         # })
+def create_page(request):
+    if request.method == "POST":
+        form = NewPageForm(request.POST)
+        if form.is_valid():
+            entry_title = form.cleaned_data["title"]
+            if entry_title in util.list_entries():
+                return render(request, "encyclopedia/create_page.html", {
+                            "form": NewPageForm(request.POST),
+                            "entry_already_exists": True,
+                            "form_is_not_valid": False
+                        })            
+            page_content = form.cleaned_data["content"]
+            page_content = f"# {entry_title}\n\n {page_content}"
+            util.save_entry(entry_title, page_content)
+            return HttpResponseRedirect(reverse("entry", args=(entry_title,)))
+        else:
+            return render(request, "encyclopedia/create_page.html", {
+            "form": NewPageForm(request.POST),
+            "entry_already_exists": False,
+            "form_is_not_valid": True
+        })
+    else:
+        return render(request, "encyclopedia/create_page.html", {
+            "form": NewPageForm(),
+            "entry_already_exists": False,
+            "form_is_not_valid": False
+        })

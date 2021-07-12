@@ -1,0 +1,21 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Create New Page
+{% endblock %}
+
+{% block body %}
+    {% if entry_already_exists %}
+        <h3>The page you are trying to create already exists.</h3>
+        <!-- TODO: Link to edit existing page -->
+        <p>You can edit the current TITLEEEE page, or change below the title of the entry you want to create.</p>
+    {% elif form_is_not_valid %}
+        <h3>The text you entered is not valid.</h3>
+        <p>Please edit your entry page and save again.</p>
+    {% endif %}
+        <form action="{% url 'create' %}" method="POST">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Save">
+        </form>
+{% endblock %}
