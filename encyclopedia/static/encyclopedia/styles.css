@@ -10,11 +10,17 @@ code {
 h1 {
     margin-top: 0px;
     padding-top: 20px;
+    border-bottom: solid 1px lightgray;
 }
 
 textarea {
     height: 90vh;
     width: 80%;
+}
+
+input {
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .main {

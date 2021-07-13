@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block body %}
+    <h1>Create New Page</h1>
     {% if entry_already_exists %}
         <h3>The page you are trying to create already exists.</h3>
         <p>You can edit the current <a href="{% url 'edit' title=form.title.value %}">{{ form.title.value }}</a> page, or change below the title of the entry you want to create.</p>
@@ -12,10 +13,12 @@
         <h3>The text you entered is not valid.</h3>
         <p>Please edit your entry page and save again.</p>
     {% endif %}
-        <form action="{% url 'create' %}" method="POST">
-            {% csrf_token %}
-            {{ form.title.label }}: {{ form.title }}
-            {{ form.content }}
-            <input type="submit" value="Save">
-        </form>
+        <div class="col-11">
+            <form action="{% url 'create' %}" method="POST">
+                {% csrf_token %}
+                <input class="form-control" name="title" type="text" placeholder="{{ form.title.label }}" value="{{ form.title.value }}">
+                <textarea class="form-control" rows="12" name="content" placeholder="{{ form.content.label }}">{{ form.content.value }}</textarea>
+                <input class="btn btn-secondary" type="submit" value="Save">
+            </form>
+        </div>
 {% endblock %}

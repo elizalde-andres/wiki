@@ -12,8 +12,8 @@ from . import util
 import encyclopedia
 
 class NewPageForm(forms.Form):
-    title = forms.CharField(label="Entry title")
-    content = forms.CharField(label="", widget=forms.Textarea)
+    title = forms.CharField(label="Page title", initial="")
+    content = forms.CharField(label="Page content", widget=forms.Textarea, initial="")
 
 
 def index(request):
@@ -62,9 +62,9 @@ def create_page(request, title=""):
         form = NewPageForm(request.POST)
         if form.is_valid():
             entry_title = form.cleaned_data["title"]
-            if entry_title in util.list_entries():
+            if any(entry_title.lower() == x.lower() for x in util.list_entries()):
                 return render(request, "encyclopedia/create_page.html", {
-                            "form": NewPageForm(request.POST),
+                            "form": form,
                             "entry_already_exists": True,
                             "form_is_not_valid": False
                         })            
@@ -103,7 +103,6 @@ def edit_page(request, title):
                         "title": title,
                         "content": util.get_entry(title)
                     })
-    form.fields['title'].widget.attrs['readonly'] = True
     return render(request, "encyclopedia/edit_page.html", {
             "form": form
         })
