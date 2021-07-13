@@ -69,7 +69,6 @@ def create_page(request, title=""):
                             "form_is_not_valid": False
                         })            
             page_content = form.cleaned_data["content"]
-            page_content = f"# {entry_title}\n\n {page_content}"
             util.save_entry(entry_title, page_content)
             return HttpResponseRedirect(reverse("entry", args=(entry_title,)))
         else:
